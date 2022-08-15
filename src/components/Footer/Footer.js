@@ -1,20 +1,26 @@
 import React, { useState } from 'react';
-import { clearCompleted } from '../../actions/actions';
+import { clearCompleted, setFilter } from '../../actions/actions';
 import { useStore } from '../../store/store';
 
 function Footer() {
   const [state, dispatch] = useStore();
-  const { job, jobs, filters } = state;
+  const { job, jobs, filters, filter } = state;
 
   return (
     <footer className="footer">
       <span className="todo-count">
-        <strong>{Object.keys(jobs).length}</strong> item left
+        <strong>{Object.keys(jobs.filter(filters[filter])).length}</strong> item left
       </span>
       <ul className="filters">
         {Object.keys(filters).map((type) => (
           <li key={type}>
-            <a className="selected" href={`#/${type}`}>
+            <a
+              className="selected"
+              href={`#/${type}`}
+              onClick={() => {
+                dispatch(setFilter(type));
+              }}
+            >
               {type}
             </a>
           </li>

@@ -1,4 +1,13 @@
-import { SET_JOBS, SET_JOB, ADD_JOB, DELETE_JOB, UPDATE_JOB, CHECK_JOB, CLEAR_COMPLETED } from '../constants/constants';
+import {
+  SET_JOBS,
+  SET_JOB,
+  ADD_JOB,
+  DELETE_JOB,
+  UPDATE_JOB,
+  CHECK_JOB,
+  CLEAR_COMPLETED,
+  SET_FILTER,
+} from '../constants/constants';
 
 export const initState = {
   job: '',
@@ -14,6 +23,7 @@ export const initState = {
       completed: true,
     },
   ],
+  filter: 'All',
   filters: {
     All: () => true,
     Active: (todo) => !todo.completed,
@@ -99,6 +109,13 @@ const reducer = (state, action) => {
         jobs: state.jobs.filter((job) => {
           return job.completed === false;
         }),
+      };
+      break;
+    }
+    case SET_FILTER: {
+      newState = {
+        ...state,
+        filter: action.payload,
       };
       break;
     }

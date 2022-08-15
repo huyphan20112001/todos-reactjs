@@ -1,10 +1,31 @@
-import { deleteJob, updateJob, addJob, setJob } from '../../actions/actions';
+import { useEffect, useState } from 'react';
+import { deleteJob, updateJob, addJob, setJob, setJobs } from '../../actions/actions';
 import { useStore } from '../../store/store';
 
 function ToDoList() {
   const [state, dispatch] = useStore();
-  const { job, jobs } = state;
+  const { job, jobs, filter, filters } = state;
+  const [toggleAll, setToggleAll] = useState(jobs.every(filters.Completed));
+  console.log('filters.Completed', jobs.every(filters.Completed));
 
+  const handleToggleAll = () => {
+    console.log('!toggleAll: ', !toggleAll);
+    setToggleAll(!toggleAll);
+    console.log('toggleAll ', toggleAll);
+  };
+
+  useEffect(() => {
+    const handleSetJobs = () => {
+      dispatch(setJobs(toggleAll));
+    };
+    handleSetJobs();
+  }, [toggleAll]);
+
+  useEffect(() => {
+    if (jobs.every(filters.Completed)) {
+      setToggleAll(!toggleAll);
+    }
+  }, [jobs]);
   const handleSetJob = (e, id) => {
     const date = {
       id,
@@ -58,15 +79,19 @@ function ToDoList() {
     return checkCompleted;
   };
 
-  const handleToggleAll = () => {};
-
   return (
     <section className="main">
-      <input id="toggle-all" className="toggle-all" type="checkbox" onChange={() => handleToggleAll} />
+      <input
+        id="toggle-all"
+        className="toggle-all"
+        type="checkbox"
+        onChange={() => handleToggleAll()}
+        value={toggleAll}
+      />
       <label htmlFor="toggle-all">Mark all as complete</label>
       <ul className="todo-list">
         {jobs &&
-          jobs.map((job) => (
+          jobs.filter(filters[filter]).map((job) => (
             <li
               onDoubleClick={() => handleToggleClass(job.id, job.completed)}
               key={job.id}
